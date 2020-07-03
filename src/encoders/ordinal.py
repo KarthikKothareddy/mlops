@@ -28,7 +28,7 @@ class OrdinalEncoder(TransformerMixin):
     def transform(self, X):
         for feature in self.features:
             # apply mapping
-            X[feature] = X[feature].map(self.encoder_dict_[feature])
+            X.loc[:, feature] = X[feature].map(self.encoder_dict_[feature])
         return X
 
 

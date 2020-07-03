@@ -29,7 +29,48 @@ class OrdinalEncoder(TransformerMixin):
         for feature in self.features:
             # apply mapping
             X[feature] = X[feature].map(self.encoder_dict_[feature])
-            # drop original
-            X = X.drop(columns=[feature])
         return X
+
+
+class TargetGuidedEncoder(OrdinalEncoder):
+
+    def __init__(self, features=None):
+        super().__init__(features)
+
+    def fit(self, X, y=None):
+        if y is None:
+            raise ValueError("target variable is missing")
+        if self.features is None:
+            self.features = [
+                c for c in X.columns
+                if X[c].dtype == "O"
+            ]
+        for feature in self.features:
+            __labels = X.groupby([feature])[y.name].mean().sort_values().index
+            # update mapping by target guidance
+            self.encoder_dict_[feature] = {
+                k: v
+                for v, k in enumerate(__labels, 0)
+            }
+        return self
+
+
+class MeanEncoder(OrdinalEncoder):
+
+    def __init__(self, features=None):
+        super().__init__(features)
+
+    def fit(self, X, y=None):
+        if y is None:
+            raise ValueError("target variable is missing")
+        if self.features is None:
+            self.features = [
+                c for c in X.columns
+                if X[c].dtype == "O"
+            ]
+        for feature in self.features:
+            __labels = X.groupby([feature])[y.name].mean().to_dict()
+            # update mapping by target guidance
+            self.encoder_dict_[feature] = __labels
+        return self
 

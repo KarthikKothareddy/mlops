@@ -27,7 +27,7 @@ class MeanImputer(TransformerMixin):
 
     def transform(self, X):
         for feature in self.features:
-            X[feature] = np.where(
+            X.loc[:, feature] = np.where(
                 X[feature].isnull(),
                 self.imputer_dict_[feature],
                 X[feature]
@@ -71,7 +71,7 @@ class ArbitraryValueImputer(TransformerMixin):
 
     def transform(self, X):
         for feature in self.features:
-            X[feature] = np.where(
+            X.loc[:, feature] = np.where(
                 X[feature].isnull(),
                 self.arbitrary_value,
                 X[feature]

@@ -1,5 +1,5 @@
 
-
+import scipy.stats as stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -27,3 +27,13 @@ def kde_plot(data, feature, target, figsize=(10, 6)):
     ax.legend(lines, labels, loc='best')
     plt.show()
 
+
+def diagnostic_plot(data, feature, figsize=(15, 6), bins=30):
+    # function to plot a histogram and a Q-Q plot
+    # side by side, for a certain variable
+    plt.figure(figsize=figsize)
+    plt.subplot(1, 2, 1)
+    data[feature].hist(bins=bins)
+    plt.subplot(1, 2, 2)
+    stats.probplot(data[feature], dist="norm", plot=plt)
+    plt.show()

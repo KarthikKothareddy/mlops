@@ -75,5 +75,3 @@ class WeightOfEvidenceEncoder(ProbabilityRatioEncoder):
         return self
 
 
-
-

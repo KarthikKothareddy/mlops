@@ -121,3 +121,4 @@ class YeoJohnsonTransformer(TransformerMixin):
         for feature in self.features:
             X.loc[:, feature], self.maxlog_dict_[feature] = stats.yeojohnson(X[feature])
         return X
+

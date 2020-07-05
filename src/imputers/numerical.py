@@ -79,3 +79,35 @@ class ArbitraryValueImputer(TransformerMixin):
         return X
 
 
+class RandomSampleImputer(TransformerMixin):
+
+    def __init__(self, features=None, seed=255):
+        self.features = features
+        self.seed = seed
+        # init imputer dict
+        self.imputer_dict_ = {}
+        # default features to select
+        self.numerical = ["int", "float"]
+
+    def fit(self, X, y=None):
+        # default to all numerical features
+        if self.features is None:
+            self.features = [
+                c for c in X.columns
+                if X[c].dtype in self.numerical
+            ]
+        return self
+
+    def transform(self, X):
+        for feature in self.features:
+            sample = X[feature].dropna().sample(
+                X[feature].isnull().sum(),
+                replace=True,
+                random_state=self.seed
+            )
+            sample.index = X[X[feature].isnull()].index
+            X.loc[X[feature].isnull(), feature] = sample
+        return X
+
+
+

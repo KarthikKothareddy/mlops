@@ -15,6 +15,15 @@ def countplot(data, x, figsize):
     plt.show()
 
 
+def hexbin_plot(data, x, y, gridsize=15):
+    data.plot.hexbin(
+        x=x,
+        y=y,
+        gridsize=gridsize
+    )
+    plt.show()
+
+
 def kde_plot(data, feature, target, figsize=(10, 6)):
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)

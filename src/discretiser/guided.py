@@ -13,7 +13,7 @@ class DecisionTreeDiscretiser(BaseEstimator, TransformerMixin):
 
     # default grid for decision tree
     __param_grid = {
-        "max_depth": [2, 3, 4, 5],
+        "max_depth": [1, 2, 3, 4, 5],
         "criterion": ["gini", "entropy"],
         "splitter": ["best", "random"]
     }
@@ -44,15 +44,18 @@ class DecisionTreeDiscretiser(BaseEstimator, TransformerMixin):
         for feature in self.features:
             # construct the grid search
             classifier = GridSearchCV(
-                DecisionTreeClassifier(random_state=self.random_state),
+                DecisionTreeClassifier(
+                    random_state=self.random_state
+                ),
                 param_grid=self.param_grid,
                 cv=self.cv, n_jobs=-1
             )
             classifier.fit(X.loc[:, [feature]], y)
             self.binner_dict_[feature] = DecisionTreeClassifier(
-                **classifier.best_params_, random_state=self.random_state
+                **classifier.best_params_,
+                random_state=self.random_state
             ).fit(
-                X[feature].to_frame(), y
+                X.loc[:, [feature]], y
             )
         return self
 

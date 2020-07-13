@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from src.imputers.missing_indicator import MissingIndicatorImputer
-from src.imputers.numerical import MeanImputer, MedianImputer
+from src.imputers.numerical import MeanImputer, MedianImputer, RandomSampleImputer
 from src.imputers.categorical import ModeImputer
 
 data_titanic = pd.read_csv(
@@ -12,6 +12,7 @@ data_titanic = pd.read_csv(
 )
 
 """
+data = pd.read_csv()
 x_train, x_test, y_train, y_test = train_test_split(
     data_titanic[['age', 'fare']],  # predictors
     data_titanic['survived'],  # target
@@ -78,10 +79,36 @@ def test_mode_imputer(data):
     print(f"Missing Mean: {data.isnull().mean()}")
 
 
+def test_random_sample_imputer():
+
+    df = pd.read_csv("../data/titanic.csv")
+    x_train, x_test, y_train, y_test = train_test_split(
+        df[['age', 'fare']],  # predictors
+        df['survived'],  # target
+        test_size=0.3,  # percentage of obs in test set
+        random_state=0)  # seed to ensure reproducibility
+
+    print(x_train.shape, x_test.shape)
+
+    imputer = RandomSampleImputer(features=["age"])
+    imputer.fit(x_train)
+    print(f"Imputer Dict: {imputer.imputer_dict_}")
+    """
+    tmp = imputer.transform(X=x_train)
+    tmp = tmp.rename({"age": "age_NA"}, axis="columns")
+    print(tmp.head())
+    data = pd.concat([x_train, tmp.loc["age_NA"]], axis=1)
+    """
+    x_train = imputer.transform(x_train)
+    print(x_train.shape)
+    print(x_train.head())
+    print(f"Missing Mean: {x_train.isnull().mean()}")
+
+
 # test_missing_imputer(x_train)
 # test_mean_imputer(x_train)
 # test_median_imputer(x_train)
-test_mode_imputer(x_train)
-
+# test_mode_imputer(x_train)
+test_random_sample_imputer()
 
 

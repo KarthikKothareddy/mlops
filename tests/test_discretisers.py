@@ -2,8 +2,13 @@
 
 import pandas as pd
 import numpy as np
+import json
+import pprint
 from sklearn.model_selection import train_test_split
 from src.discretiser.guided import DecisionTreeDiscretiser
+
+
+pp = pprint.PrettyPrinter(indent=4)
 
 
 def impute_na(data, variable):
@@ -27,11 +32,12 @@ def test_decision_tree_discretiser():
         usecols=['age', 'fare', 'survived']
     )
     x_train, x_test, y_train, y_test = train_test_split(
-        data[['age', 'fare']],
+        data[['age',]],
         data['survived'],
         test_size=0.3,
         random_state=0
     )
+    print(x_train.shape, x_test.shape)
     # replace NA in both train and test sets
     x_train['age'] = impute_na(data, 'age')
     x_train['fare'] = impute_na(data, 'fare')
@@ -39,13 +45,14 @@ def test_decision_tree_discretiser():
     x_test['fare'] = impute_na(data, 'fare')
 
     discretiser = DecisionTreeDiscretiser(
-        features=["age"], cv=10
+        features=["age"], cv=5
     )
 
     discretiser.fit(x_train, y_train)
-    print(discretiser.binner_dict_)
+    pp.pprint(discretiser.binner_dict_)
     tmp = discretiser.transform(x_train)
     print(tmp.age.unique())
+    # print(tmp.fare.unique())
 
 
 test_decision_tree_discretiser()

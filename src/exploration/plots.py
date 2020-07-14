@@ -37,12 +37,19 @@ def kde_plot(data, feature, target, figsize=(10, 6)):
     plt.show()
 
 
-def diagnostic_plot(data, feature, figsize=(15, 6), bins=30):
-    # function to plot a histogram and a Q-Q plot
-    # side by side, for a certain variable
+def diagnostic_plot(data, feature, figsize=(16, 5), bins=30):
+    # setting figure
     plt.figure(figsize=figsize)
-    plt.subplot(1, 2, 1)
-    data[feature].hist(bins=bins)
-    plt.subplot(1, 2, 2)
+    # histogram
+    plt.subplot(1, 3, 1)
+    sns.distplot(data[feature], bins=bins)
+    plt.title('Histogram')
+    # Q-Q plot
+    plt.subplot(1, 3, 2)
     stats.probplot(data[feature], dist="norm", plot=plt)
+    plt.ylabel('Variable Quantiles')
+    # boxplot
+    plt.subplot(1, 3, 3)
+    sns.boxplot(y=data[feature])
+    plt.title('Boxplot')
     plt.show()
